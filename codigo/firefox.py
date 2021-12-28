@@ -27,27 +27,35 @@ start_time = datetime.now()
 # Entre na pasta: "%appdata%\Roaming\Mozilla\Firefox\Profiles"
 # Copie o caminho para a variavel "profile_path"
 
-driver_path = str(Path(__file__).parent.absolute()) + r"\geckodriver.exe" #caminho do navegador
-profile_path = r"C:\Users\<seu_usuario>\AppData\Roaming\Mozilla\Firefox\Profiles\<seu_profile>" #caminho do profile, geralmente localizado em "%appdata%\Roaming\Mozilla\Firefox\Profiles" *fazer login no whatsapp antes
-
 lista_contatos = []
 lista_figuras = []
 
+    #=== CONFIGURACOES ===#
+
+#=== CAMINHO DO WEBDRIVER E DA PASTA PROFILE DO FIREFOX ===#
+driver_path = str(Path(__file__).parent.absolute()) + r"\geckodriver.exe" #caminho do navegador
+profile_path = r"C:\Users\<seu_usuario>\AppData\Roaming\Mozilla\Firefox\Profiles\<seu_profile>" #caminho do profile, geralmente localizado em "%appdata%\Roaming\Mozilla\Firefox\Profiles" *fazer login no whatsapp antes
+
 #=== NOME DA PLANILHA USADA PARA RODAR O ENVIO ===#
-planilha_contatos = str(Path(__file__).parent.absolute()) + r"\Exemplo.xlsx"
+planilha_contatos = str(Path(__file__).parent.absolute()) + r"\Exemplo.xlsx" #nessa planilha os contatos ficam a esquerda e os nomes das imagens ficam a direita, tudo na mesma planilha
 aba_planilha = "Aba1"
 
-#Nesse código os contatos ficam a esquerda e o nome da imagem fica a direita, tudo na mesma planilha
+#=== VARIAVEIS P/ DEFINIR ONDE COMEÇAM AS LISTAS DE CONTATOS E FIGURAS ===#
 
-#=== INICIANDO O NAVEGADOR ===#
+coluna_contatos = 1 #coluna A
+linha_contatos = 2 #linha 2
+coluna_figuras = 2 #coluna B
+linha_figuras = 2 #linha 2
+
+    #=== INICIANDO O NAVEGADOR ===#
 options = Options()
-#options.headless = True #pra rodar o firefox em modo oculto
-options.add_argument("-profile") #adicionando a pasta profile p/ o whatsapp não ficar pedindo o QR code 
-options.add_argument(profile_path)
+options.headless = False #true pra rodar o firefox em modo oculto
+options.add_argument("-profile") 
+options.add_argument(profile_path) #adicionando a pasta profile p/ o whatsapp não ficar pedindo o QR code  
 
-service = Service(driver_path)
+service = Service(driver_path) #caminho do driver
 
-driver = Firefox(service=service, options=options)
+driver = Firefox(service=service, options=options) 
 
 driver.get("http://web.whatsapp.com")
 
@@ -58,13 +66,12 @@ def importar_contatos(planilha):
 
     try:
         ws = wb[aba_planilha] #nome da aba da planilha
-        coluna = 1 #coluna A
-    
-        for row in range(2, ws.max_row+1): #numero da linha onde começa / maximo de linhas +1 para não finalizar antes do ultimo elemento   
-            if(ws.cell(row, coluna).value is None): #se valor é nulo -> break
+        
+        for row in range(linha_contatos, ws.max_row+1): #numero da linha onde começa / maximo de linhas +1 para não finalizar antes do ultimo elemento   
+            if(ws.cell(row, coluna_contatos).value is None): #se valor é nulo -> break
                 break
             else:
-                lista_contatos.append(ws.cell(row, coluna).value) #concatena o valor encontrado na lista
+                lista_contatos.append(ws.cell(row, coluna_contatos).value) #concatena o valor encontrado na lista
     except Exception as e:
         print("Erro ao importar contatos: " + str(e))
     finally:
@@ -75,13 +82,12 @@ def importar_figura(planilha):
 
     try:
         ws = wb[aba_planilha] #nome da aba da planilha
-        coluna = 2 #coluna B
     
-        for row in range(2, ws.max_row+1): #numero da linha onde começa / maximo de linhas +1 para não finalizar antes do ultimo elemento
-            if(ws.cell(row, coluna).value is None): #se valor é nulo -> break
+        for row in range(linha_figuras, ws.max_row+1): #numero da linha onde começa / maximo de linhas +1 para não finalizar antes do ultimo elemento
+            if(ws.cell(row, coluna_figuras).value is None): #se valor é nulo -> break
                 break
             else:
-                lista_figuras.append(ws.cell(row, coluna).value) #define na variavel o nome da imagem
+                lista_figuras.append(ws.cell(row, coluna_figuras).value) #define na variavel o nome da imagem
     except Exception as e:
         print("Erro ao importar nome da imagem: " + str(e))
     finally:
@@ -134,6 +140,7 @@ def envia_imagens(contatos, imagens):
         time.sleep(3)
         driver.close() #fecha o driver  
 
+#=== EXECUTANDO FUNÇÕES ===#
 #importando contatos
 importar_contatos(planilha_contatos) #passando a planilha carregada antes como argumento
 print("Lista de contatos importada:") 
@@ -153,5 +160,4 @@ for figura in lista_figuras:
     os.remove(str(figura) + ".jpg")
 
 end_time = datetime.now()
-
-print('---- Tempo de execução do script: {} ----'.format(end_time - start_time))
+print('---- Tempo de execução: {} ----'.format(end_time - start_time))
