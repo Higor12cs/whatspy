@@ -17,7 +17,16 @@ from selenium.webdriver.firefox.service import Service
 
 from datetime import datetime
 
+import logging
+
 start_time = datetime.now()
+
+logging.basicConfig(filename=str(Path(__file__).parent.absolute()) + "\\" + "historico.log", level=logging.INFO, format='%(message)s')
+logging.info("")
+logging.info("==================== INICIO ====================")
+logging.info("")
+logging.info("Começo do Script: " + str(datetime.now().strftime(r'%Y-%m-%d %H:%M:%S')))
+logging.info("")
 
 #=== CRIANDO UM PROFILE NO FIREFOX ===#
 
@@ -34,7 +43,7 @@ lista_figuras = []
 
 #=== CAMINHO DO WEBDRIVER E DA PASTA PROFILE DO FIREFOX ===#
 driver_path = str(Path(__file__).parent.absolute()) + r"\geckodriver.exe" #caminho do navegador
-profile_path = r"C:\Users\<seu_usuario>\AppData\Roaming\Mozilla\Firefox\Profiles\<seu_profile>" #caminho do profile, geralmente localizado em "%appdata%\Roaming\Mozilla\Firefox\Profiles" *fazer login no whatsapp antes
+profile_path = r"C:\Users\higor\AppData\Roaming\Mozilla\Firefox\Profiles\<seu_profile>" #caminho do profile, geralmente localizado em "%appdata%\Roaming\Mozilla\Firefox\Profiles" *fazer login no whatsapp antes
 
 #=== NOME DA PLANILHA USADA PARA RODAR O ENVIO ===#
 planilha_contatos = str(Path(__file__).parent.absolute()) + r"\Exemplo.xlsx" #nessa planilha os contatos ficam a esquerda e os nomes das imagens ficam a direita, tudo na mesma planilha
@@ -73,7 +82,8 @@ def importar_contatos(planilha):
             else:
                 lista_contatos.append(ws.cell(row, coluna_contatos).value) #concatena o valor encontrado na lista
     except Exception as e:
-        print("Erro ao importar contatos: " + str(e))
+        print("Erro no modulo 'importar_contatos': " + str(e))
+        logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'importar_contatos': " + str(e))
     finally:
         wb.close() #fecha o workbook p/ win32com conseguir copiar a imagem
 
@@ -89,7 +99,8 @@ def importar_figura(planilha):
             else:
                 lista_figuras.append(ws.cell(row, coluna_figuras).value) #define na variavel o nome da imagem
     except Exception as e:
-        print("Erro ao importar nome da imagem: " + str(e))
+        print("Erro no modulo 'importar_figura': " + str(e))
+        logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'importar_figura': " + str(e))
     finally:
         wb.close() #fecha o workbook p/ win32com conseguir copiar a imagem
 
@@ -106,19 +117,23 @@ def salvar_imagem(planilha):
                     shape.Copy()
                     image = ImageGrab.grabclipboard() #copia
                     image = image.convert('RGB') #converte de RGBA p/ RGB
-                    image.save(figura + ".jpg", "jpeg") #salva com a extensao .jpg
+                    image.save(str(Path(__file__).parent.absolute()) + "\\" + figura + ".jpg", "jpeg") #salva com a extensao .jpg
     except Exception as e:
-        print("Erro ao salvar a imagem: " + str(e))
+        print("Erro no modulo 'salvar_imagem': " + str(e))
+        logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'salvar_imagem': " + str(e))
     finally:
         wb.Close(True) #fecha o workbook
         excel.Quit() #finaliza o processo do excel
 
 def envia_imagens(contatos, imagens):
     print("Enviando mensagens...")
+    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Enviando mensagens...")
+    
     time.sleep(5)
     try:
         for i in range(0, len(contatos)): #percorre do 0 até o tamanho do array dos contatos enviando para o contato a respectiva imagem na mesma linha da planilha
             print("Enviando imagem: ## " + str(imagens[i].upper()) + " ## Para: ## " + str(contatos[i]).upper() + " ##")
+            logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Enviando imagem: ## " + str(imagens[i].upper()) + " ## Para: ## " + str(contatos[i]).upper() + " ##")
             #procura na pagina o elemento com o mesmo nome do contato
             x_arg = '//span[contains(@title, ' + '"' + str(contatos[i]) + '"' + ')]'
             group_title = wait.until(EC.presence_of_element_located((
@@ -135,29 +150,54 @@ def envia_imagens(contatos, imagens):
             send.click()
             time.sleep(5)
     except Exception as e:
-        print("Erro ao enviar as mensagens: " + str(e))
+        print("Erro no modulo 'envia_imagens': " + str(e))
+        logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'envia_imagens': " + str(e))
     finally:
         time.sleep(3)
-        driver.close() #fecha o driver  
+        driver.close() #fecha o driver
 
-#=== EXECUTANDO FUNÇÕES ===#
-#importando contatos
-importar_contatos(planilha_contatos) #passando a planilha carregada antes como argumento
-print("Lista de contatos importada:") 
-print(lista_contatos)
+def rotina():
+    #=== EXECUTANDO FUNÇÕES ===#
+    #importando contatos
+    importar_contatos(planilha_contatos) #passando a planilha carregada antes como argumento
+    print("Lista de contatos importada:") 
+    print(lista_contatos)
+    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Lista de contatos importada:") 
+    logging.info(lista_contatos)
 
-#importando figuras
-importar_figura(planilha_contatos) #passando a planilha carregada antes como argumento
-print("Lista de figuras importadas:")
-print(lista_figuras)
+    #importando figuras
+    importar_figura(planilha_contatos) #passando a planilha carregada antes como argumento
+    print("Lista de figuras importadas:")
+    print(lista_figuras)
+    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Lista de figuras importadas:")
+    logging.info(lista_figuras)
 
-salvar_imagem(planilha_contatos) #passando a planilha carregada antes como argumento
+    salvar_imagem(planilha_contatos) #passando a planilha carregada antes como argumento
 
-envia_imagens(lista_contatos, lista_figuras) #passa a lista de contatos e a lista de figuras armazenadas nos arrays como argumentos
+    envia_imagens(lista_contatos, lista_figuras) #passa a lista de contatos e a lista de figuras armazenadas nos arrays como argumentos
 
-#excluindo as figuras geradas
-for figura in lista_figuras:
-    os.remove(str(figura) + ".jpg")
+    #excluindo as figuras geradas
+    for figura in lista_figuras:
+        logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Deletando arquivo: " + str(Path(__file__).parent.absolute()) + "\\" + str(figura) + ".jpg")
+        os.remove(str(Path(__file__).parent.absolute()) + "\\" + str(figura) + ".jpg")  
+
+#=== VERIFICANDO SE EXISTE O ARQUIVO EXCEL ===#
+
+if os.path.exists(planilha_contatos):
+    rotina()
+else:
+    print("Arquivo Excel nao existe!")
+    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Arquivo Excel nao existe! Verifique se '" + planilha_contatos + "' esta correto.")
 
 end_time = datetime.now()
+
+logging.info("")
+logging.info("Final do Script: " + str(datetime.now().strftime(r'%Y-%m-%d %H:%M:%S')))
+logging.info("Tempo de execução: {}".format(end_time - start_time))
 print('---- Tempo de execução: {} ----'.format(end_time - start_time))
+
+logging.info("")
+logging.info("====================== FIM ======================")
+logging.info("")
+
+print(str(Path(__file__).parent.absolute()))
