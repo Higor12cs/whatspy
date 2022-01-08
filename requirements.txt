@@ -1,3 +1,4 @@
 openpyxl
 pillow
 selenium
+pywin32
