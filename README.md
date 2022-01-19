@@ -1,10 +1,10 @@
-# whatspy
+## whatspy
 Usando Python para automatizar o envio de mensagens no WhatsApp de modo oculto.
 
 ## Objetivo
 Basicamente meu objetivo era automatizar o envio de imagens armazenadas no Excel,  tudo isso de forma oculta, para que não atrapalhe o uso do computador no tempo de execução do script.
 
-# Configurações Iniciais
+## Configurações Iniciais
 Nesse programa eu automatizei o envio de imagens no WhatsApp usando o Excel para obter os dados. Dentro do arquivo .xls eu tenho uma lista de contatos, e ao lado de cada contato eu tenho o nome da figura que será enviada, tudo na mesma planilha. 
 
 Dito isso, o programa precisa dos seguintes dados:
@@ -65,6 +65,6 @@ O número de figuras deve ser correspondente ao número de contatos, e visse ver
 ## Rodando o código
 Para rodar o código é simples, basta executar o arquivo e aguardar sua execução terminar. O código também gera um arquivo `historico.log` que guarda todo o log do processo. 
 
-# É isso!
+## É isso!
 Sei que meu código está longe de ser bom, mas ainda estou aperfeiçoando, e também é bom lembrar que sou apenas um iniciante em Python. 
 Qualquer dúvida ou sugestão é só entrar em contato. Obrigado!
