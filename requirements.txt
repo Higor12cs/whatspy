@@ -2,3 +2,5 @@ openpyxl
 pillow
 selenium
 pywin32
+prettytable
+pyperclip
