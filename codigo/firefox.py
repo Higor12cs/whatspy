@@ -18,62 +18,55 @@ from prettytable import PrettyTable
 
 start_time = datetime.now() #iniciando timer do script
 
-def importar_contatos(planilha):
-    print("Importando contatos...")
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Importando contatos...")
-    wb = load_workbook(planilha, read_only=True, keep_vba=True)
-
+def importar_dados(planilha):
+    print("Importando dados 'importar_dados'...")
+    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Importando dados 'importar_dados'...")
+    
     try:
+        wb = load_workbook(planilha, read_only=True, keep_vba=True)
         ws = wb[aba_planilha] #nome da aba da planilha
         
         for row in range(linha_contatos, ws.max_row+1): #numero da linha onde começa / maximo de linhas +1 para não finalizar antes do ultimo elemento   
+            #contatos
             if(ws.cell(row, coluna_contatos).value is None): #se valor é nulo -> break
                 break
             else:
-                lista_contatos.append(ws.cell(row, coluna_contatos).value) #concatena o valor encontrado na lista
-    except Exception as e:
-        print("Erro no modulo 'importar_contatos': " + str(e))
-        logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'importar_contatos': " + str(e))
-    finally:
-        wb.close() #fecha o workbook p/ win32com conseguir copiar a imagem
-
-def importar_figura(planilha):
-    print("Importando figuras...")
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Importando figuras...")
-    wb = load_workbook(planilha, read_only=True, keep_vba=True)
-
-    try:
-        ws = wb[aba_planilha] #nome da aba da planilha
-    
-        for row in range(linha_figuras, ws.max_row+1): #numero da linha onde começa / maximo de linhas +1 para não finalizar antes do ultimo elemento
+                lista_contatos.append(ws.cell(row, coluna_contatos).value) 
+            #figuras
             if(ws.cell(row, coluna_figuras).value is None): #se valor é nulo -> break
                 break
             else:
-                lista_figuras.append(ws.cell(row, coluna_figuras).value) #define na variavel o nome da imagem
-    except Exception as e:
-        print("Erro no modulo 'importar_figura': " + str(e))
-        logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'importar_figura': " + str(e))
-    finally:
-        wb.close() #fecha o workbook p/ win32com conseguir copiar a imagem
-
-def importar_datas(planilha):
-    print("Importando datas...")
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Importando datas...")
-    wb = load_workbook(planilha, read_only=True, keep_vba=True, data_only=True)
-
-    try:
-        ws = wb[aba_planilha] #nome da aba da planilha
-    
-        for row in range(linha_datas, ws.max_row+1): #numero da linha onde começa / maximo de linhas +1 para não finalizar antes do ultimo elemento
+                lista_figuras.append(ws.cell(row, coluna_figuras).value)
+            #datas
             if(ws.cell(row, coluna_datas).value is None): #se valor é nulo -> break
                 break
             else:
                 lista_datas.append(ws.cell(row, coluna_datas).value.strftime(r"%d/%m/%Y %H:%M"))
     except Exception as e:
-        print("Erro no modulo 'importar_datas': " + str(e))
-        logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'importar_datas': " + str(e))
+        print("Erro no modulo 'importar_dados': " + str(e))
+        logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'importar_dados': " + str(e))
     finally:
-        wb.close() #fecha o workbook p/ win32com conseguir copiar a imagem
+        wb.close()
+        print("Lista de contatos importada:") 
+        print(lista_contatos)
+        print("### " + str(len(lista_contatos)) + " Contatos importados ###")
+        logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Lista de contatos importada:") 
+        logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === ### " + str(len(lista_contatos)) + " Contatos importados ###") 
+        logging.info(lista_contatos)
+
+        print("Lista de figuras importadas:")
+        print(lista_figuras)
+        print("### " + str(len(lista_figuras)) + " Figuras importadas ###")
+        logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Lista de figuras importadas:")
+        logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === ### " + str(len(lista_figuras)) + " Figuras importadas ###")
+        logging.info(lista_figuras)
+
+        print("Lista de datas importadas:")
+        print(lista_datas)
+        print("### " + str(len(lista_datas)) + " Datas importadas ###")
+        logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Lista de datas importadas:")
+        logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === ### " + str(len(lista_datas)) + " Datas importadas ###")
+        logging.info(lista_datas)
 
 def salvar_imagem(planilha):
     print("Salvando imagens...")
@@ -142,9 +135,9 @@ def envia_imagens(contatos, imagens, datas):
         logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'envia_imagens': " + str(e))
 
 def envia_tabelaAtrasos(ptablle, contatos):
+    print("Enviando resultados...")
     try:
         for i in range(0, len(contatos)):
-            print("Enviando resultados...")
             logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Enviando resultados...")
             
             x_arg = '//span[contains(@title, ' + '"' + str(contatos[i]) + '"' + ')]'
@@ -158,11 +151,16 @@ def envia_tabelaAtrasos(ptablle, contatos):
                 By.XPATH, input_path)))
             
             mensagem = "Indicadores desatualizados:\n" + "```" + str(ptablle) + "```"
-            
-            pyperclip.copy(mensagem)
-            input_box.send_keys(Keys.CONTROL + "V")
+
+            for line in mensagem.split('\n'):
+                input_box.send_keys(line)
+                input_box.send_keys(Keys.SHIFT, Keys.ENTER)
+
+            #pyperclip.copy(mensagem)
             input_box.send_keys(Keys.ENTER)
-            pyperclip.copy("")
+            #pyperclip.copy("")
+            print("Tabela enviada para -> " + contatos[i])
+            logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Tabela enviada para -> " + contatos[i])
     except Exception as e:
         print("Erro no modulo 'envia_tabelaAtrasos': " + str(e))
         logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro no modulo 'envia_tabelaAtrasos': " + str(e))
@@ -188,33 +186,7 @@ def deleta_arquivos():
 
 def rotina():
     #=== EXECUTANDO FUNÇÕES ===#
-    #importando contatos
-    importar_contatos(planilha_contatos) 
-    print("Lista de contatos importada:") 
-    print(lista_contatos)
-    print("### " + str(len(lista_contatos)) + " Contatos importados ###")
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Lista de contatos importada:") 
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === ### " + str(len(lista_contatos)) + " Contatos importados ###") 
-    logging.info(lista_contatos)
-
-    #importando figuras
-    importar_figura(planilha_contatos)
-    print("Lista de figuras importadas:")
-    print(lista_figuras)
-    print("### " + str(len(lista_figuras)) + " Figuras importadas ###")
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Lista de figuras importadas:")
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === ### " + str(len(lista_figuras)) + " Figuras importadas ###")
-    logging.info(lista_figuras)
-
-    #importando datas
-    importar_datas(planilha_contatos) 
-    print("Lista de datas importadas:")
-    print(lista_datas)
-    print("### " + str(len(lista_datas)) + " Datas importadas ###")
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === Lista de datas importadas:")
-    logging.info(str(datetime.now().strftime(r'%H:%M:%S')) + " === ### " + str(len(lista_datas)) + " Datas importadas ###")
-    logging.info(lista_datas)
-
+    importar_dados(planilha_contatos)
     salvar_imagem(planilha_contatos) 
     time.sleep(5)
     envia_imagens(lista_contatos, lista_figuras, lista_datas) 
@@ -239,33 +211,24 @@ lista_contatos = []
 lista_figuras = []
 lista_datas = []
 
-contatos_adm = ["<contatos_adm>"]
-
-#=== CONFIGURACOES ===#
-
-#=== CAMINHO DO WEBDRIVER E DA PASTA PROFILE DO FIREFOX ===#
-driver_path = str(Path(__file__).parent.absolute()) + r"\geckodriver.exe" #caminho do navegador
-profile_path = r"C:\Users\<seu_usuario>\AppData\Roaming\Mozilla\Firefox\Profiles\<seu_profile>" #caminho do profile, geralmente localizado em "%appdata%\Roaming\Mozilla\Firefox\Profiles" *fazer login no whatsapp antes
-
-#=== NOME DA PLANILHA USADA PARA RODAR O ENVIO ===#
-planilha_contatos = str(Path(__file__).parent.absolute()) + r"\<sua_planilha>" #nessa planilha os contatos ficam a esquerda e os nomes das imagens ficam a direita, tudo na mesma planilha
-aba_planilha = "<sua_aba>"
-
-#=== VARIAVEIS P/ DEFINIR ONDE COMEÇAM AS LISTAS DE CONTATOS E FIGURAS ===#
-
-coluna_contatos = 1 
-linha_contatos = 1 
-coluna_figuras = 1 
-linha_figuras = 1
-coluna_datas = 1
-linha_datas = 1
+contatos_adm = ["Contato"]
+driver_path = str(Path(__file__).parent.absolute()) + r"\geckodriver.exe" 
+profile_path = r"C:\Users\<seu_usuario>\AppData\Roaming\Mozilla\Firefox\Profiles\<seu_profile>"
+planilha_contatos = str(Path(__file__).parent.absolute()) + r"\Exemplo.xlsx"   
+aba_planilha = "Aba1"
+coluna_contatos = 1     
+linha_contatos = 2 
+coluna_figuras = 2 
+linha_figuras = 2
+coluna_datas = 3
+linha_datas = 2
 
 #=== INICIANDO A TABELA DE RESULTADOS ===#
 table = PrettyTable(["INDICADOR", "DATA ULT AT"])
 
 #=== INICIANDO O NAVEGADOR ===#
 options = Options()
-options.headless = False #true pra rodar o firefox em modo oculto
+options.headless = True #true pra rodar o firefox em modo oculto
 options.add_argument("-profile") 
 options.add_argument(profile_path) #adicionando a pasta profile p/ o whatsapp não ficar pedindo o QR code  
 
@@ -294,12 +257,14 @@ else:
 end_time = datetime.now()
 
 time.sleep(5)
-driver.close()
+try:    
+    driver.close()
+except Exception as e:
+    print("Erro ao fechar o driver: " + str(e))
+    logging.error(str(datetime.now().strftime(r'%H:%M:%S')) + " === Erro ao fechar o driver: " + str(e))
 
 #logging final e tempo de execucao
 logging.info("*** Tempo de execução: {}".format(end_time - start_time))
 print('*** Tempo de execução: {}'.format(end_time - start_time))
 
 logging.info("*** FIM *** - " + str(datetime.now().strftime(r'%Y-%m-%d %H:%M:%S')))
-
-print(str(Path(__file__).parent.absolute()))
