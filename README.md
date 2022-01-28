@@ -58,7 +58,3 @@ O número de figuras deve ser correspondente ao número de contatos, e visse ver
 
 # Rodando o código
 Para rodar o código é simples, basta executar o arquivo e aguardar sua execução terminar. O código também gera um arquivo `historico.log` que guarda todo o log do processo. 
-
-# É isso!
-Sei que meu código está longe de ser bom, mas ainda estou aperfeiçoando, e também é bom lembrar que sou apenas um iniciante em Python. 
-Qualquer dúvida ou sugestão é só entrar em contato. Obrigado!
