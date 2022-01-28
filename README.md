@@ -1,7 +1,6 @@
 # Configurações Iniciais
-Nesse programa eu automatizei o envio de imagens no WhatsApp usando o Excel para obter os dados. Dentro do arquivo .xls eu tenho uma lista de contatos, e ao lado de cada contato eu tenho o nome da figura que será enviada, tudo na mesma planilha. 
 
-Dito isso, o programa precisa dos seguintes dados:
+Configurações necessárias para o código rodar.
 
 # Caminho do GeckoDriver
 
