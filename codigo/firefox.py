@@ -30,17 +30,13 @@ def importar_dados(planilha):
             #contatos
             if(ws.cell(row, coluna_contatos).value is None): #se valor é nulo -> break
                 break
+            elif(ws.cell(row, coluna_figuras).value is None):
+                break
+            elif(ws.cell(row, coluna_datas).value is None):
+                break
             else:
                 lista_contatos.append(ws.cell(row, coluna_contatos).value) 
-            #figuras
-            if(ws.cell(row, coluna_figuras).value is None): #se valor é nulo -> break
-                break
-            else:
                 lista_figuras.append(ws.cell(row, coluna_figuras).value)
-            #datas
-            if(ws.cell(row, coluna_datas).value is None): #se valor é nulo -> break
-                break
-            else:
                 lista_datas.append(ws.cell(row, coluna_datas).value.strftime(r"%d/%m/%Y %H:%M"))
     except Exception as e:
         print("Erro no modulo 'importar_dados': " + str(e))
