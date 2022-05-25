@@ -53,7 +53,7 @@ Exemplo:
 
 Observação:
 
-O número de figuras deve ser correspondente ao número de contatos, e visse versa. Caso não seja o caso, encontraremos erros no código.
+O número de figuras deve ser correspondente ao número de contatos, e visse versa. Caso não seja, encontraremos erros no código.
 
 # Rodando o código
 Para rodar o código é simples, basta executar o arquivo e aguardar sua execução terminar. O código também gera um arquivo `historico.log` que guarda todo o log do processo. 
